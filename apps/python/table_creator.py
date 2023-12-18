@@ -18,6 +18,7 @@ sentencia_sql = """
     DROP TABLE IF EXISTS proveedores CASCADE;
     DROP TABLE IF EXISTS productos CASCADE;
     DROP TABLE IF EXISTS tiempo CASCADE;
+    DROP TABLE IF EXISTS boletas CASCADE;
 
     CREATE TABLE IF NOT EXISTS proveedores (
         id_proveedor TEXT PRIMARY KEY,
@@ -50,6 +51,20 @@ sentencia_sql = """
         precio_unitario FLOAT,
         precio_total FLOAT
     );
+
+    CREATE TABLE IF NOT EXISTS boletas (
+        id text PRIMARY KEY,
+        id_tiempo INTEGER REFERENCES tiempo (id)
+    );
+
+    CREATE TABLE IF NOT EXISTS boleta_producto (
+        id serial PRIMARY KEY,
+        id_boleta TEXT REFERENCES boletas (id),
+        id_producto TEXT REFERENCES productos (identificador),
+        precio_producto FLOAT
+    );
+
+
 
 """
     # CREATE INDEX ON facturas (año);
