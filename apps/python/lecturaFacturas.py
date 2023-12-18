@@ -8,13 +8,13 @@ import uuid  # Agregar importación para uuid
 db_config = {
     'dbname': 'ingdatos',
     'user': 'postgres',
-    'password': 'asd123',
+    'password': 'anashe123',
     'host': 'localhost',  # Puedes cambiarlo si tu base de datos está en un servidor remoto
     'port': '5432'  # Cambia el puerto si es necesario
 }
 
 # Directorio que contiene las carpetas de facturas
-directorio_facturas = 'proyectoidatos2023II/Facturas'
+directorio_facturas = 'C:/Users/Asus/Downloads/proyecto-ig-datos/proyectoidatos2023II/Facturas'
 
 # Conexión a la base de datos PostgreSQL
 try:

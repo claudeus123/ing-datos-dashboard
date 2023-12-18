@@ -1,38 +1,35 @@
 import os
 import csv
 import psycopg2
-from psycopg2 import sql
+from psycopg2 import sql, extras
 import openpyxl
+import time
 
 # Configuración de la base de datos PostgreSQL
 db_config = {
     'dbname': 'ingdatos',
     'user': 'postgres',
-    'password': 'asd123',
-    'host': 'localhost',  # Puedes cambiarlo si tu base de datos está en un servidor remoto
-    'port': '5432'  # Cambia el puerto si es necesario
+    'password': 'anashe123',
+    'host': 'localhost',  
+    'port': '5432'  
 }
-archivo_xlsx = 'proyectoidatos2023II/Proveedores/Proveedores.xlsx'
+archivo_xlsx = 'C:/Users/Asus/Downloads/proyecto-ig-datos/proyectoidatos2023II/Proveedores/Proveedores.xlsx'
+tiempo_inicio = time.time()
 
-# Conexión a la base de datos PostgreSQL
 try:
+    data_to_insert = []
     conn = psycopg2.connect(**db_config)
     cursor = conn.cursor()
 
-    # Leer datos desde el archivo Excel (.xlsx)
     workbook = openpyxl.load_workbook(archivo_xlsx)
     sheet = workbook.active
 
-    # Recorrer filas en el archivo Excel
     for row in sheet.iter_rows(min_row=2, values_only=True):  # Se asume que la primera fila es el encabezado
-        # Obtener datos de las columnas
-        id_proveedor, proveedor, contacto_comercial, email, telefono = row
+        data_to_insert.append(row)
+    
+    query = sql.SQL("INSERT INTO proveedores (id_proveedor, proveedor, contacto_comercial, email, telefono) VALUES %s")
+    extras.execute_values(cursor, query, data_to_insert)
 
-        # Insertar datos en la base de datos
-        query = sql.SQL("INSERT INTO proveedores (id_proveedor, proveedor, contacto_comercial, email, telefono) VALUES (%s, %s, %s, %s, %s)")
-        cursor.execute(query, (id_proveedor, proveedor, contacto_comercial, email, telefono))
-
-    # Confirmar cambios y cerrar conexión
     conn.commit()
 
 except psycopg2.Error as e:
@@ -42,3 +39,7 @@ finally:
     if conn is not None:
         conn.close()
         print("Conexión cerrada.")
+    tiempo_fin = time.time()
+
+    tiempo_ejecucion = tiempo_fin - tiempo_inicio
+    print(tiempo_ejecucion)

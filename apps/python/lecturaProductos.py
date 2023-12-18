@@ -8,11 +8,11 @@ import openpyxl
 db_config = {
     'dbname': 'ingdatos',
     'user': 'postgres',
-    'password': 'asd123',
+    'password': 'anashe123',
     'host': 'localhost',  # Puedes cambiarlo si tu base de datos está en un servidor remoto
     'port': '5432'  # Cambia el puerto si es necesario
 }
-directorio_productos = 'proyectoidatos2023II/Productos'
+directorio_productos = 'C:/Users/Asus/Downloads/proyecto-ig-datos/proyectoidatos2023II/Productos'
 
 # Lista para almacenar los nombres de las carpetas
 nombres_carpetas = []
