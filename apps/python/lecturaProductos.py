@@ -1,45 +1,38 @@
 import os
 import csv
 import psycopg2
-from psycopg2 import sql
+from psycopg2 import sql, extras
 import openpyxl
+import time
 
 # Configuración de la base de datos PostgreSQL
 db_config = {
     'dbname': 'ingdatos',
     'user': 'postgres',
     'password': 'anashe123',
-    'host': 'localhost',  # Puedes cambiarlo si tu base de datos está en un servidor remoto
-    'port': '5432'  # Cambia el puerto si es necesario
+    'host': 'localhost',  
+    'port': '5432'  
 }
 directorio_productos = 'C:/Users/Asus/Downloads/proyecto-ig-datos/proyectoidatos2023II/Productos'
 
-# Lista para almacenar los nombres de las carpetas
 nombres_carpetas = []
-
+data_to_insert = []
+tiempo_inicio = time.time()
 try:
     conn = psycopg2.connect(**db_config)
     cursor = conn.cursor()
 
-    # Recorrer archivos .xlsx en la carpeta de productos
     for archivo_xlsx in os.listdir(directorio_productos):
         if archivo_xlsx.endswith('.xlsx'):
             ruta_xlsx = os.path.join(directorio_productos, archivo_xlsx)
-
-            # Leer datos desde el archivo Excel (.xlsx)
             workbook = openpyxl.load_workbook(ruta_xlsx)
             sheet = workbook.active
 
-            # Recorrer filas en el archivo Excel
-            for row in sheet.iter_rows(min_row=2, values_only=True):  # Se asume que la primera fila es el encabezado
-                # Obtener datos de las columnas
-                identificador, categoria, subcategoria, nombre = row
+            for row in sheet.iter_rows(min_row=2, values_only=True):  
+                data_to_insert.append(row)
 
-                # Insertar datos en la base de datos
-                query = sql.SQL("INSERT INTO productos (identificador, categoria, subcategoria, nombre) VALUES (%s, %s, %s, %s)")
-                cursor.execute(query, (identificador, categoria, subcategoria, nombre))
-
-    # Confirmar cambios y cerrar conexión
+    query = sql.SQL("INSERT INTO productos (identificador, categoria, subcategoria, nombre) VALUES %s")
+    extras.execute_values(cursor, query, data_to_insert)
     conn.commit()
 
 except psycopg2.Error as e:
@@ -49,3 +42,8 @@ finally:
     if conn is not None:
         conn.close()
         print("Conexión cerrada.")
+    
+    tiempo_fin = time.time()
+
+    tiempo_ejecucion = tiempo_fin - tiempo_inicio
+    print(tiempo_ejecucion)
