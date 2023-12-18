@@ -17,6 +17,7 @@ sentencia_sql = """
     DROP TABLE IF EXISTS facturas CASCADE;
     DROP TABLE IF EXISTS proveedores CASCADE;
     DROP TABLE IF EXISTS productos CASCADE;
+    DROP TABLE IF EXISTS tiempo CASCADE;
 
     CREATE TABLE IF NOT EXISTS proveedores (
         id_proveedor TEXT PRIMARY KEY,
@@ -33,18 +34,25 @@ sentencia_sql = """
         nombre TEXT
     );
 
-    CREATE TABLE IF NOT EXISTS facturas (
+    CREATE TABLE IF NOT EXISTS tiempo (
         id serial PRIMARY KEY,
         año INTEGER,
         mes TEXT,
-        dia INTEGER,
+        dia INTEGER
+    );
+    
+    CREATE TABLE IF NOT EXISTS facturas (
+        id serial PRIMARY KEY,
+        id_tiempo INTEGER REFERENCES tiempo (id),
         id_proveedor TEXT REFERENCES proveedores (id_proveedor),
         id_producto TEXT REFERENCES productos (identificador),
         cantidad INTEGER,
         precio_unitario FLOAT,
         precio_total FLOAT
     );
+
 """
+    # CREATE INDEX ON facturas (año);
 
 # Ejecutar la sentencia SQL
 cursor.execute(sentencia_sql)
