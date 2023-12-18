@@ -78,8 +78,8 @@ try:
                                             next(csv_price_reader)
                                             for price_row in csv_price_reader:
                                                 if price_row[0] == row[i]:
-                                                    insert_productos.append([row[0], row[i], price_row[1]])
-                                                    print(row[0], row[i], price_row[1])
+                                                    insert_productos.append([row[0], row[i], int(price_row[1])*1.3])
+                                                    print(row[0], row[i], int(price_row[1]) * 1.3)
                                                     break
                                         # print(row[i])
                                     time_id = datos_tiempo[f"{año}{mes}{dia_contador}"]
