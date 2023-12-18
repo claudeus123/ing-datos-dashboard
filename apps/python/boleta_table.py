@@ -36,10 +36,19 @@ tiempo_inicio = time.time()
 
 insert_boletas = []
 insert_productos = []
-time_id = 1
 try:
     conn = psycopg2.connect(**db_config)
     cursor = conn.cursor()
+
+    consulta_sql = "SELECT id, año, mes, dia FROM tiempo"
+    cursor.execute(consulta_sql)
+    resultados = cursor.fetchall()
+    datos_tiempo = {}
+
+    for resultado in resultados:
+        id_tiempo, año, mes, dia = resultado
+        format = f"{año}{mes}{dia}"
+        datos_tiempo[format] = id_tiempo
 
     for año_carpeta in os.listdir(directorio_boletas):
         ruta_año = os.path.join(directorio_boletas, año_carpeta)
@@ -73,9 +82,9 @@ try:
                                                     print(row[0], row[i], price_row[1])
                                                     break
                                         # print(row[i])
+                                    time_id = datos_tiempo[f"{año}{mes}{dia_contador}"]
                                     insert_boletas.append([id_boleta, time_id])
                                     print(id_boleta, time_id)
-                        time_id += 1
                         dia_contador += 1
 
     query = sql.SQL("INSERT INTO boletas (id, id_tiempo) VALUES %s")

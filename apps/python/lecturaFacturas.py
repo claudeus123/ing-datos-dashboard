@@ -17,10 +17,19 @@ directorio_facturas = 'C:/Users/Asus/Downloads/proyecto-ig-datos/proyectoidatos2
 tiempo_inicio = time.time()
 
 data_to_insert = []
-time_id = 1
 try:
     conn = psycopg2.connect(**db_config)
     cursor = conn.cursor()
+
+    consulta_sql = "SELECT id, año, mes, dia FROM tiempo"
+    cursor.execute(consulta_sql)
+    resultados = cursor.fetchall()
+    datos_tiempo = {}
+
+    for resultado in resultados:
+        id_tiempo, año, mes, dia = resultado
+        format = f"{año}{mes}{dia}"
+        datos_tiempo[format] = id_tiempo
 
     for año_carpeta in os.listdir(directorio_facturas):
         ruta_año = os.path.join(directorio_facturas, año_carpeta)
@@ -42,8 +51,8 @@ try:
                                 next(csv_reader)
                                 for row in csv_reader:
                                     proveedor, producto, cantidad, precio_unitario, precio_total = row
+                                    time_id = datos_tiempo[f"{año}{mes}{dia_contador}"]
                                     data_to_insert.append([time_id, proveedor, producto, cantidad, precio_unitario, precio_total])
-                        time_id += 1
                         dia_contador += 1
 
     query = sql.SQL("INSERT INTO facturas (id_tiempo, id_proveedor, id_producto, cantidad, precio_unitario, precio_total) VALUES %s")
