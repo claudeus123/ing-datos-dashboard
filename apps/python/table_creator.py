@@ -14,6 +14,10 @@ cursor = conexion.cursor()
 
 # Definir la sentencia SQL para crear la tabla (sustituye con tus propios campos y tipos de datos)
 sentencia_sql = """
+    DROP TABLE IF EXISTS facturas CASCADE;
+    DROP TABLE IF EXISTS proveedores CASCADE;
+    DROP TABLE IF EXISTS productos CASCADE;
+
     CREATE TABLE IF NOT EXISTS proveedores (
         id_proveedor TEXT PRIMARY KEY,
         proveedor TEXT,
@@ -30,7 +34,7 @@ sentencia_sql = """
     );
 
     CREATE TABLE IF NOT EXISTS facturas (
-        id TEXT PRIMARY KEY,
+        id serial PRIMARY KEY,
         año INTEGER,
         mes TEXT,
         dia INTEGER,
