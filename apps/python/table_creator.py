@@ -13,12 +13,12 @@ conexion = psycopg2.connect(
 cursor = conexion.cursor()
 
 # Definir la sentencia SQL para crear la tabla (sustituye con tus propios campos y tipos de datos)
+    # DROP TABLE IF EXISTS facturas CASCADE;
+    # DROP TABLE IF EXISTS proveedores CASCADE;
+    # DROP TABLE IF EXISTS productos CASCADE;
+    # DROP TABLE IF EXISTS tiempo CASCADE;
+    # DROP TABLE IF EXISTS boletas CASCADE;
 sentencia_sql = """
-    DROP TABLE IF EXISTS facturas CASCADE;
-    DROP TABLE IF EXISTS proveedores CASCADE;
-    DROP TABLE IF EXISTS productos CASCADE;
-    DROP TABLE IF EXISTS tiempo CASCADE;
-    DROP TABLE IF EXISTS boletas CASCADE;
 
     CREATE TABLE IF NOT EXISTS proveedores (
         id_proveedor TEXT PRIMARY KEY,
@@ -64,7 +64,15 @@ sentencia_sql = """
         precio_producto FLOAT
     );
 
-
+    CREATE TABLE IF NOT EXISTS fact_ventas (
+        id serial PRIMARY KEY,
+        id_boleta TEXT REFERENCES boletas (id),
+        id_producto TEXT REFERENCES productos (identificador),
+        cantidad INTEGER,
+        precio_unitario FLOAT,
+        precio_total FLOAT
+    );
+    
 
 """
     # CREATE INDEX ON facturas (año);
