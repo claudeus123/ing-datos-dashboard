@@ -41,19 +41,20 @@ try:
                 ruta_mes = os.path.join(ruta_año, mes_carpeta)
                 if os.path.isdir(ruta_mes):
                     mes = mes_carpeta.lower()
-                    dia_contador = 1
+
                     for archivo_csv in os.listdir(ruta_mes):
                         if archivo_csv.endswith('.csv'):
                             ruta_csv = os.path.join(ruta_mes, archivo_csv)
-
+                            dia = archivo_csv[8:].split('-')[0]
                             with open(ruta_csv, 'r', newline='', encoding='utf-8') as csv_file:
                                 csv_reader = csv.reader(csv_file)
                                 next(csv_reader)
                                 for row in csv_reader:
                                     proveedor, producto, cantidad, precio_unitario, precio_total = row
-                                    time_id = datos_tiempo[f"{año}{mes}{dia_contador}"]
+                                    time_id = datos_tiempo[f"{año}{mes}{dia}"]
+                                    # print(time_id, archivo_csv)
                                     data_to_insert.append([time_id, proveedor, producto, cantidad, precio_unitario, precio_total])
-                        dia_contador += 1
+
 
     query = sql.SQL("INSERT INTO facturas (id_tiempo, id_proveedor, id_producto, cantidad, precio_unitario, precio_total) VALUES %s")
     extras.execute_values(cursor, query, data_to_insert)                                

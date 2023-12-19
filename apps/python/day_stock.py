@@ -19,12 +19,13 @@ try:
     conn = psycopg2.connect(**db_config)
     cursor = conn.cursor()
 
-    consulta_sql = "select id_tiempo, id_producto, sum(precio_total) as total from facturas group by id_tiempo, id_producto"
+    consulta_sql = "select id_tiempo, id_producto, sum(precio_total) as total, sum(cantidad) as unidades from facturas group by id_tiempo, id_producto"
+
     cursor.execute(consulta_sql)
     resultados = cursor.fetchall()
     datos_tiempo = []
     for resultado in resultados:
-        id_tiempo, id_producto, total = resultado
+        id_tiempo, id_producto, total, unidades = resultado
         datos_tiempo.append(resultado)
 
     print(datos_tiempo)

@@ -60,11 +60,11 @@ try:
                 ruta_mes = os.path.join(ruta_año, mes_carpeta)
                 if os.path.isdir(ruta_mes):
                     mes = mes_carpeta.lower()
-                    dia_contador = 1
                     for archivo_csv in os.listdir(ruta_mes):
                         if archivo_csv.endswith('.csv'):
                             ruta_csv = os.path.join(ruta_mes, archivo_csv)
-
+                            dia = archivo_csv[7:].split('-')[0]
+                            # print(dia)
                             with open(ruta_csv, 'r', newline='', encoding='utf-8') as csv_file:
                                 csv_reader = csv.reader(csv_file)
                                 next(csv_reader)
@@ -79,13 +79,14 @@ try:
                                             for price_row in csv_price_reader:
                                                 if price_row[0] == row[i]:
                                                     insert_productos.append([row[0], row[i], int(price_row[1])*1.3])
-                                                    print(row[0], row[i], int(price_row[1]) * 1.3)
+                                                    # print(row[0], row[i], int(price_row[1]) * 1.3)
                                                     break
                                         # print(row[i])
-                                    time_id = datos_tiempo[f"{año}{mes}{dia_contador}"]
+                                    time_id = datos_tiempo[f"{año}{mes}{dia}"]
                                     insert_boletas.append([id_boleta, time_id])
-                                    print(id_boleta, time_id)
-                        dia_contador += 1
+                                    # print(id_boleta, time_id)
+
+                    print(f"BOLETAS DEL MES {mes} DEL AÑO {año} COMPLETADAS")
 
     query = sql.SQL("INSERT INTO boletas (id, id_tiempo) VALUES %s")
     extras.execute_values(cursor, query, insert_boletas)
