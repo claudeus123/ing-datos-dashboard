@@ -52,7 +52,6 @@ try:
                                 for row in csv_reader:
                                     proveedor, producto, cantidad, precio_unitario, precio_total = row
                                     time_id = datos_tiempo[f"{año}{mes}{dia}"]
-                                    # print(time_id, archivo_csv)
                                     data_to_insert.append([time_id, proveedor, producto, cantidad, precio_unitario, precio_total])
 
 
