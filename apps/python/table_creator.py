@@ -5,8 +5,9 @@ from psycopg2 import sql
 conexion = psycopg2.connect(
     host="localhost",
     user="postgres",
-    password="anashe123",
-    database="ingdatos"
+    password="asd123",
+    database="ingdatos",
+    port="5433"
 )
 
 # Crear un objeto cursor para ejecutar comandos SQL

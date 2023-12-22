@@ -8,9 +8,9 @@ import time
 db_config = {
     'dbname': 'ingdatos',
     'user': 'postgres',
-    'password': 'anashe123',
+    'password': 'asd123',
     'host': 'localhost', 
-    'port': '5432' 
+    'port': '5433' 
 }
 tiempo_inicio = time.time()
 

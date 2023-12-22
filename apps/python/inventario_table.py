@@ -8,14 +8,14 @@ import re
 db_config = {
     'dbname': 'ingdatos',
     'user': 'postgres',
-    'password': 'anashe123',
+    'password': 'asd123',
     'host': 'localhost', 
-    'port': '5432' 
+    'port': '5433' 
 }
 
 pattern = r'\d+'
 
-directorio_inventario = 'C:/Users/Asus/Downloads/proyecto-ig-datos/proyectoidatos2023II/Inventario'
+directorio_inventario = 'C:/Users/sketch/Desktop/IngDeDatps/proyectoidatos2023II/Inventario'
 tiempo_inicio = time.time()
 
 insert_inventario = []
