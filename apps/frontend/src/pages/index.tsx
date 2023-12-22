@@ -23,7 +23,7 @@ const Home = () => {
       <Grid container spacing={2}>
         <DemoGrid item xs={12} sx={{ marginLeft: 15, marginTop: 20}} sm={10}>
           <Typography variant='h1'>
-            Bienvenida Juanita!
+            Bienvenido!
           </Typography>
           <Typography variant='body1'>Selecciona una página en el menú izquierdo para comenzar a visualizar tus datos.</Typography>
         </DemoGrid>
