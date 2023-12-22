@@ -15,7 +15,7 @@ import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
 // ** Demo Components Imports
 import Table from 'src/views/dashboard/Table'
-import Trophy from 'src/views/dashboard/Trophy'
+import Trophy from 'src/views/dashboard/TotalSales'
 import TotalEarning from 'src/views/dashboard/TotalEarning'
 import StatisticsCard from 'src/views/dashboard/StatisticsCard'
 import BarChart from 'src/views/dashboard/BarChart'
@@ -32,13 +32,10 @@ const ProductsPage = () => {
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} md={6} lg={16}>
-          <BarChart seriesData={seriesData} categoriesData={categoriesData} /> {/* ACA */}
+          <BarChart title="hola" seriesData={seriesData} categoriesData={categoriesData} /> {/* ACA */}
         </Grid>
         <Grid item xs={12} md={6} lg={16}>
           <LineChart seriesData={seriesData} categoriesData={categoriesData} />
-        </Grid>
-        <Grid item xs={12} md={6} lg={8}>
-          <DepositWithdraw />
         </Grid>
       </Grid>
     </ApexChartWrapper>

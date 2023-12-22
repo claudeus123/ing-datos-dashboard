@@ -15,7 +15,7 @@ import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
 // ** Demo Components Imports
 import Table from 'src/views/dashboard/Table'
-import Trophy from 'src/views/dashboard/Trophy'
+import Trophy from 'src/views/dashboard/TotalSales'
 import TotalEarning from 'src/views/dashboard/TotalEarning'
 import StatisticsCard from 'src/views/dashboard/StatisticsCard'
 import BarChart from 'src/views/dashboard/BarChart'
@@ -31,9 +31,6 @@ interface Reponse {
 
 const ProvidersPage = () => {
   const [lista, setLista] = useState<Reponse>({labels:[],amount:[]});
-
-
-  
 
   // series de ejemplo
   const seriesData = [37, 57, 45, 75, 57, 40, 100];
@@ -77,13 +74,10 @@ const ProvidersPage = () => {
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} md={6} lg={16}>
-          <BarChart title="Top 10 proveedores con mas facturas en el 2022" seriesData={lista!.amount} categoriesData={lista!.labels} /> {/* ACA */}
+          <BarChart title="Top 10 proveedores con mas facturas en el 2022" seriesData={lista.amount} categoriesData={lista.labels} /> {/* ACA */}
         </Grid>
         <Grid item xs={12} md={6} lg={16}>
-          <LineChart seriesData={lista!.amount} categoriesData={lista!.labels} />
-        </Grid>
-        <Grid item xs={12} md={6} lg={8}>
-          <DepositWithdraw />
+          <LineChart seriesData={lista.amount} categoriesData={lista.labels} />
         </Grid>
       </Grid>
     </ApexChartWrapper>
