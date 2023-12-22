@@ -22,6 +22,7 @@ import BarChart from 'src/views/dashboard/BarChart'
 import DepositWithdraw from 'src/views/dashboard/DepositWithdraw'
 import LineChart from 'src/views/dashboard/LineChart'
 import { useEffect, useState } from 'react'
+import { obtenerProveedoresMasCaros } from 'src/queries/proveedores'
 
 interface Reponse {
   labels: string[],
@@ -37,8 +38,24 @@ const ProvidersPage = () => {
 
   // cargar data aqui
   useEffect(() => {
-    //setData(response.json)
-  }, [])
+    const fetchData = async () => {
+      try {
+        const datos = await obtenerProveedoresMasCaros("WITH ranked_categories AS (SELECT p.id_proveedor AS proveedor_id, p.proveedor AS nombre_proveedor, pr.categoria, SUM(f.cantidad) AS cantidad_total_facturada, ROW_NUMBER() OVER (PARTITION BY p.id_proveedor, pr.categoria ORDER BY SUM(f.cantidad) ASC) AS ranking FROM proveedores p JOIN facturas f ON p.id_proveedor = f.id_proveedor JOIN productos pr ON f.id_producto = pr.identificador JOIN tiempo t ON f.id_tiempo = t.id WHERE t.año = 2022 GROUP BY p.id_proveedor, p.proveedor, pr.categoria) SELECT nombre_proveedor, cantidad_total_facturada FROM ranked_categories WHERE ranking BETWEEN 1 AND 10 ORDER BY proveedor_id, categoria, cantidad_total_facturada ASC;");
+        const dato1 = datos[0];
+        console.log(datos)
+        console.log(dato1)
+        console.log(dato1.cantidad_total_facturada);
+        console.log(dato1.cantidad_total_facturada);
+
+
+        // Aquí puedes hacer algo con los datos, como establecerlos en un estado con setData
+      } catch (error) {
+        console.error('Error al obtener datos:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
   
   return (
     <ApexChartWrapper>

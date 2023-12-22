@@ -1,25 +1,29 @@
-import pgPromise from 'pg-promise';
+const obtenerProveedoresMasCaros = async (query: string) => {
 
-const connectionOptions = {
-  host: 'localhost',
-  port: 5433,
-  database: 'ingDatos',
-  user: 'postgres',
-  password: 'asd123',
-};
-
-const pgp = pgPromise();
-const db = pgp(connectionOptions);
-
-const obtenerProveedoresMasCaros = async () => {
-  try {
-    const result = await db.any('SELECT * FROM productos WHERE productos.nombre="A"');
-    return result;
-  } catch (error) {
-    throw error;
-  } finally {
-    pgp.end();
-  }
-};
-
-export { obtenerProveedoresMasCaros };
+    console.log("entrando a obtener proveedores")
+    try {
+      const response = await fetch('http://localhost:8080/proveedores', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: String(query),
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+  
+      console.log("data: ",response.json)
+      
+      return await response.json();
+    } catch (error) {
+        console.log("hubo error aqui:" , error)
+      throw error;
+    }
+  };
+  
+  export { obtenerProveedoresMasCaros };
+  
