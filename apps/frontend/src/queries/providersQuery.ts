@@ -1,6 +1,5 @@
-const obtenerProveedoresMasCaros = async (query: string) => {
+const getProvidersQuery = async (query: string) => {
 
-    console.log("entrando a obtener proveedores")
     try {
       const response = await fetch('http://localhost:8080/proveedores', {
         method: 'POST',
@@ -25,5 +24,4 @@ const obtenerProveedoresMasCaros = async (query: string) => {
     }
   };
   
-  export { obtenerProveedoresMasCaros };
-  
+  export { getProvidersQuery };

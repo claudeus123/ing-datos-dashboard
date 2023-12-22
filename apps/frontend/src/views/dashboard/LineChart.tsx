@@ -18,11 +18,12 @@ import { ApexOptions } from 'apexcharts'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 
 interface LineChartProps {
+  title: string;
   seriesData: number[];
   categoriesData: string[];
 }
 
-const LineChart = ({ seriesData, categoriesData }: LineChartProps) => {
+const LineChart = ({ title, seriesData, categoriesData }: LineChartProps) => {
   // ** Hook
   const theme = useTheme()
 
@@ -75,7 +76,7 @@ const LineChart = ({ seriesData, categoriesData }: LineChartProps) => {
   return (
     <Card>
       <CardHeader
-        title='LineChart'
+        title={title}
         titleTypographyProps={{
           sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
         }}

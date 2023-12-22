@@ -43,7 +43,7 @@ const BarChart = ({ title, seriesData, categoriesData }: BarChartProps) => {
       width: 2,
       colors: [theme.palette.background.paper]
     },
-    legend: { show: true },
+    legend: { show: false },
     grid: {
       strokeDashArray: 7,
       padding: {

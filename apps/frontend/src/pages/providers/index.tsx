@@ -1,84 +1,75 @@
-// ** MUI Imports
 import Grid from '@mui/material/Grid'
-
-// ** Icons Imports
-import Poll from 'mdi-material-ui/Poll'
-import CurrencyUsd from 'mdi-material-ui/CurrencyUsd'
-import HelpCircleOutline from 'mdi-material-ui/HelpCircleOutline'
-import BriefcaseVariantOutline from 'mdi-material-ui/BriefcaseVariantOutline'
-
-// ** Custom Components Imports
-import CardStatisticsVerticalComponent from 'src/@core/components/card-statistics/card-stats-vertical'
-
-// ** Styled Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
-
-// ** Demo Components Imports
-import Table from 'src/views/dashboard/Table'
-import Trophy from 'src/views/dashboard/TotalSales'
-import TotalEarning from 'src/views/dashboard/TotalEarning'
-import StatisticsCard from 'src/views/dashboard/StatisticsCard'
 import BarChart from 'src/views/dashboard/BarChart'
-import DepositWithdraw from 'src/views/dashboard/DepositWithdraw'
-import LineChart from 'src/views/dashboard/LineChart'
 import { useEffect, useState } from 'react'
-import { obtenerProveedoresMasCaros } from 'src/queries/proveedores'
+import { getProvidersQuery } from 'src/queries/providersQuery'
 
-interface Reponse {
+interface ResponseData {
   labels: string[],
   amount: number[]
 }
 
 const ProvidersPage = () => {
-  const [lista, setLista] = useState<Reponse>({labels:[],amount:[]});
+  const [mostBills, setMostBills] = useState<ResponseData>({ labels: [], amount: [] }); // + facturas
+  const [mostProfit, setMostProfit] = useState<ResponseData>({ labels: [], amount: [] }); // + rentable
 
-  // series de ejemplo
-  const seriesData = [37, 57, 45, 75, 57, 40, 100];
-  const categoriesData = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-  // cargar data aqui
   useEffect(() => {
-    console.log("alooo")
     const fetchData = async () => {
       try {
-        const datos = await obtenerProveedoresMasCaros("SELECT proveedores.proveedor, SUM(facturas.precio_total) AS total_facturado FROM facturas JOIN tiempo ON facturas.id_tiempo = tiempo.id JOIN proveedores ON facturas.id_proveedor = proveedores.id_proveedor WHERE tiempo.año = 2022 GROUP BY proveedores.proveedor ORDER BY total_facturado DESC LIMIT 10;");
-        
-        if (datos){
-          console.log("Aqui deberia haber datos: ", datos)
+        const query: string = "SELECT proveedores.proveedor, SUM(facturas.precio_total) AS total_facturado FROM facturas JOIN tiempo ON facturas.id_tiempo = tiempo.id JOIN proveedores ON facturas.id_proveedor = proveedores.id_proveedor WHERE tiempo.año = 2022 GROUP BY proveedores.proveedor ORDER BY total_facturado DESC LIMIT 10;"
+        const datos = await getProvidersQuery(query);
+        if (datos) {
           let lista_nombres = [];
           let lista_cantidad = [];
-          
           for (const object of datos) {
             lista_nombres.push(object.proveedor);
             lista_cantidad.push(object.total_facturado);
           }
-  
-          
-          const lista: Reponse = {labels: lista_nombres, amount: lista_cantidad}
-          setLista(lista);
-
+          const lista: ResponseData = { labels: lista_nombres, amount: lista_cantidad }
+          setMostBills(lista);
         };
-
-        
-        
-        // Aquí puedes hacer algo con los datos, como establecerlos en un estado con setData
       } catch (error) {
         console.error('Error al obtener datos:', error);
       }
     };
-
     fetchData();
   }, []);
-  
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const query: string = "SELECT proveedores.proveedor, COALESCE(SUM(facturas.precio_total), 0) AS ganancias_totales FROM proveedores LEFT JOIN facturas ON proveedores.id_proveedor = facturas.id_proveedor LEFT JOIN tiempo ON facturas.id_tiempo = tiempo.id WHERE tiempo.año = 2022 GROUP BY proveedores.proveedor ORDER BY ganancias_totales DESC LIMIT 10;"
+        const datos = await getProvidersQuery(query);
+        if (datos) {
+          console.log(datos)
+          let lista_nombres = [];
+          let lista_cantidad = [];
+          for (const object of datos) {
+            lista_nombres.push(object.proveedor);
+            lista_cantidad.push(object.ganancias_totales);
+          }
+          const lista: ResponseData = { labels: lista_nombres, amount: lista_cantidad }
+          setMostProfit(lista);
+        };
+      } catch (error) {
+        console.error('Error al obtener datos:', error);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} md={6} lg={16}>
-          <BarChart title="Top 10 proveedores con mas facturas en el 2022" seriesData={lista.amount} categoriesData={lista.labels} /> {/* ACA */}
+          <BarChart title="Top 10 proveedores con más facturas en el 2022" seriesData={mostBills.amount} categoriesData={mostBills.labels} /> {/* ACA */}
         </Grid>
         <Grid item xs={12} md={6} lg={16}>
-          <LineChart seriesData={lista.amount} categoriesData={lista.labels} />
+          <BarChart title="Top 10 proveedores más rentables en el 2022" seriesData={mostProfit.amount} categoriesData={mostProfit.labels} /> {/* ACA */}
         </Grid>
+        {/* <Grid item xs={12} md={6} lg={16}>
+          <LineChart seriesData={lista.amount} categoriesData={lista.labels} />
+        </Grid> */}
       </Grid>
     </ApexChartWrapper>
   )
