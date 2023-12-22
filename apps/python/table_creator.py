@@ -19,7 +19,7 @@ cursor = conexion.cursor()
     # DROP TABLE IF EXISTS tiempo CASCADE;
     # DROP TABLE IF EXISTS boletas CASCADE;
 sentencia_sql = """
-
+    DROP TABLE IF EXISTS stock CASCADE;
     CREATE TABLE IF NOT EXISTS proveedores (
         id_proveedor TEXT PRIMARY KEY,
         proveedor TEXT,
@@ -71,6 +71,13 @@ sentencia_sql = """
         cantidad INTEGER,
         precio_unitario FLOAT,
         precio_total FLOAT
+    );
+
+    CREATE TABLE IF NOT EXISTS stock (
+        id serial PRIMARY KEY,
+        id_producto TEXT REFERENCES productos (identificador),
+        id_tiempo INTEGER REFERENCES tiempo (id),
+        cantidad INTEGER
     );
     
 
