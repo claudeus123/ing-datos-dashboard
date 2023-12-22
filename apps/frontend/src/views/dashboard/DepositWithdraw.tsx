@@ -9,7 +9,7 @@ import MuiDivider, { DividerProps } from '@mui/material/Divider'
 
 interface DataType {
   title: string
-  amount: string
+  amount: number
 }
 
 // Styled Divider component
@@ -27,6 +27,14 @@ interface DepositWithdrawProps {
   ProvidersData: DataType[];
   ProductsData: DataType[];
 }
+
+const customFormatter = (value: number): string => {
+  return value > 999999
+    ? `$${(value / 1000000).toFixed(3)}M`
+    : value > 999
+    ? `$${(value / 1000).toFixed(0)}K`
+    : `$${value}`;
+};
 
 const DepositWithdraw: React.FC<DepositWithdrawProps> = ({ ProvidersData, ProductsData }) => {
   return (
@@ -104,7 +112,7 @@ const DepositWithdraw: React.FC<DepositWithdrawProps> = ({ ProvidersData, Produc
                     <Typography sx={{ fontWeight: 600, fontSize: '1rem' }}>{item.title}</Typography>
                   </Box>
                   <Typography variant='subtitle2' sx={{ fontWeight: 600, color: 'success.main' }}>
-                    {item.amount}
+                    {customFormatter(item.amount)}
                   </Typography>
                 </Box>
               </Box>

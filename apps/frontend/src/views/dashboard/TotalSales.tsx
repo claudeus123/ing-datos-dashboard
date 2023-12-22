@@ -21,6 +21,14 @@ const TrophyImg = styled('img')({
   position: 'absolute'
 })
 
+const customFormatter = (value: number): string => {
+  return value > 999999
+    ? `$${(value / 1000000).toFixed(3)}M`
+    : value > 999
+    ? `$${(value / 1000).toFixed(0)}K`
+    : `$${value}`;
+};
+
 const TotalSales = ({ totalSales }: { totalSales: number }) => {
   // ** Hook
   const theme = useTheme()
@@ -35,7 +43,7 @@ const TotalSales = ({ totalSales }: { totalSales: number }) => {
           Suma de ventas del último mes.
         </Typography>
         <Typography variant='h5' sx={{ my: 4, color: 'primary.main' }}>
-          {totalSales}
+          {customFormatter(totalSales)}
         </Typography>
         <TriangleImg alt='triangle background' src={`/images/misc/${imageSrc}`} />
         <TrophyImg alt='trophy' src='/images/misc/trophy.png' />

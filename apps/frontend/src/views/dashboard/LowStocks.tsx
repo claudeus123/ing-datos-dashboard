@@ -20,7 +20,7 @@ import { ThemeColor } from 'src/@core/layouts/types'
 
 interface StockDataType {
   title: string
-  stock: string
+  amount: number
 }
 
 const LowStocks = ({ stockData }: { stockData: StockDataType[] }) => {
@@ -63,7 +63,7 @@ const LowStocks = ({ stockData }: { stockData: StockDataType[] }) => {
 
                 <Box sx={{ display: 'flex', textAlign: 'end', flexDirection: 'column' }}>
                   <Typography sx={{ fontWeight: 600, fontSize: '0.875rem', lineHeight: 1.72, letterSpacing: '0.22px' }}>
-                    {item.stock}
+                    {item.amount}
                   </Typography>
                   <Typography variant='caption' sx={{ lineHeight: 1.5 }}>
                     En stock

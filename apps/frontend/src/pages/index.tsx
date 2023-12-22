@@ -25,72 +25,149 @@ import SalesByCountries from 'src/views/dashboard/LowStocks'
 import { ReactElement, useEffect, useState } from 'react'
 import { ThemeColor } from 'src/@core/layouts/types'
 import LowStocks from 'src/views/dashboard/LowStocks'
+import { getProvidersQuery } from 'src/queries/providersQuery'
+
+
+interface ResponseData {
+  labels: string[],
+  amount: number[]
+}
+
+interface DataType {
+  stats: number
+  title: string
+  color: ThemeColor
+  icon: ReactElement
+}
+
+interface StockDataType {
+  title: string
+  stock: string
+}
+
+interface DepositWithdrawProps {
+  ProvidersData: DataType[];
+  ProductsData: DataType[];
+}
+
+interface DataType2 {
+  title: string
+  amount: string
+}
+
+
 
 const Home = () => {
   const [totalSales, setTotalSales] = useState<number>(0);
   const [salesAmount, setSalesAmount] = useState<number>(0);
   const [providersAmount, setProvidersAmount] = useState<number>(0);
   const [productsAmount, setProductsAmount] = useState<number>(0);
-  const [totalGain, setTotalGain] = useState<number>(0);
+  const [facturesAmount, setFacturesAmount] = useState<number>(0);
+
+  const [lowStock, setLowStock] = useState<{ amount: number; title: string; }[]>([]);
+  const [bestProviders, setBestProviders] = useState<{ amount: number; title: string; }[]>([]);
+  const [bestProducts, setBestProducts] = useState<{ amount: number; title: string; }[]>([]);
 
 
-  interface DataType {
-    stats: number
-    title: string
-    color: ThemeColor
-    icon: ReactElement
-  }
 
-  interface StockDataType {
-    title: string
-    stock: string
-  }
+// mejores proveedores
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const query: string = "SELECT     p.proveedor,     COUNT(f.id_producto) AS total_productos FROM     proveedores p JOIN     facturas f ON p.id_proveedor = f.id_proveedor GROUP BY     p.proveedor ORDER BY     total_productos DESC LIMIT 7;"
+      const datos = await getProvidersQuery(query);
+      if (datos) {
+        let lista_nombres = [];
+        let lista_cantidad = [];
+        for (const object of datos) {
+          lista_nombres.push(object.proveedor);
+          lista_cantidad.push(object.total_productos);
+        }
 
-  const providersData = [
-    {
-      amount: '+$4,650',
-      title: 'Gumroad Account'
-    },
-    {
-      amount: '+$92,705',
-      title: 'Mastercard'
-    },
-    {
-      amount: '+$957',
-      title: 'Stripe Account'
-    },
-    {
-      amount: '+$6,837',
-      title: 'American Bank'
-    },
-    {
-      amount: '+$446',
-      title: 'Bank Account'
+        let providersData: {
+          amount: number;
+          title: string;
+        }[] = []
+        for (let i = 0; i < lista_nombres.length; i++) {
+          providersData.push({ amount: lista_cantidad[i], title: lista_nombres[i] });
+        }
+
+        setBestProviders(providersData);
+        console.log(bestProviders)
+      };
+    } catch (error) {
+      console.error('Error al obtener datos:', error);
     }
-  ]
-  
-  const productsData = [
-    {
-      amount: '-$145',
-      title: 'Google Adsense'
-    },
-    {
-      amount: '-$1870',
-      title: 'Github Enterprise'
-    },
-    {
-      amount: '-$450',
-      title: 'Upgrade Slack Plan'
-    },
-    {
-      amount: '-$540',
-      title: 'Digital Ocean'
-    },
-    {
-      amount: '-$21',
-      title: 'AWS Account'
+  };
+  fetchData();
+}, []);
+
+
+//top 7 productos mas ganancias historico
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const query: string = "SELECT      productos.nombre AS nombre_producto,     SUM(fact_ventas.precio_total) AS ganancia_total FROM     productos JOIN     fact_ventas ON productos.identificador = fact_ventas.id_producto GROUP BY     productos.identificador, productos.nombre ORDER BY     ganancia_total DESC LIMIT 7;"
+      const datos = await getProvidersQuery(query);
+      if (datos) {
+        let lista_nombres = [];
+        let lista_cantidad = [];
+        for (const object of datos) {
+          lista_nombres.push(object.nombre_producto);
+          lista_cantidad.push(object.ganancia_total);
+        }
+
+        let providersData: {
+          amount: number;
+          title: string;
+        }[] = []
+        for (let i = 0; i < lista_nombres.length; i++) {
+          providersData.push({ amount: lista_cantidad[i], title: lista_nombres[i] });
+        }
+
+        setBestProducts(providersData);
+        console.log(bestProviders)
+      };
+    } catch (error) {
+      console.error('Error al obtener datos:', error);
     }
-  ]
+  };
+  fetchData();
+}, []);
+
+//top 7 productos menos stock
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const query: string = "SELECT     p.nombre,     s.cantidad FROM     productos p JOIN     stock s ON p.identificador = s.id_producto JOIN     tiempo t ON s.id_tiempo = t.id WHERE     t.año = 2022 AND t.mes = 'diciembre' ORDER BY     s.cantidad ASC LIMIT 5;"
+      const datos = await getProvidersQuery(query);
+      if (datos) {
+        let lista_nombres = [];
+        let lista_cantidad = [];
+        for (const object of datos) {
+          lista_nombres.push(object.nombre);
+          lista_cantidad.push(object.cantidad);
+        }
+
+        let providersData: {
+          amount: number;
+          title: string;
+        }[] = []
+        for (let i = 0; i < lista_nombres.length; i++) {
+          providersData.push({ amount: lista_cantidad[i], title: lista_nombres[i] });
+        }
+
+        setLowStock(providersData);
+
+      };
+    } catch (error) {
+      console.error('Error al obtener datos:', error);
+    }
+  };
+  fetchData();
+}, []);
+
+
   const stockData: StockDataType[] = [
     {
       stock: '894k',
@@ -134,19 +211,96 @@ const Home = () => {
       icon: <CellphoneLink sx={{ fontSize: '1.75rem' }} />
     },
     {
-      stats: totalGain,
+      stats: facturesAmount,
       color: 'info',
-      title: 'Ganancia Total',
+      title: 'Facturas',
       icon: <CurrencyUsd sx={{ fontSize: '1.75rem' }} />
     }
   ]
 
-  useEffect(() => {
-    // PRIMER QUERY
-    const fetchTotalSales = () => {
 
-    }
-    fetchTotalSales()
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const query: string = "SELECT      SUM(fv.precio_total) AS total_ventas_diciembre_2022 FROM      fact_ventas fv     JOIN boletas b ON fv.id_boleta = b.id     JOIN tiempo t ON b.id_tiempo = t.id WHERE      t.año = 2022     AND t.mes = 'diciembre';";
+        const datos = await getProvidersQuery(query);
+        if (datos) {
+
+          setTotalSales(datos[0].total_ventas_diciembre_2022);
+        };
+      } catch (error) {
+        console.error('Error al obtener datos:', error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const query: string = "SELECT      count (*) as cantidad_ventas FROM      boletas";
+        const datos = await getProvidersQuery(query);
+        if (datos) {
+
+          setSalesAmount(datos[0].cantidad_ventas);
+        };
+      } catch (error) {
+        console.error('Error al obtener datos:', error);
+      }
+    };
+    
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const query: string = "SELECT      count (*) as cantidad_proveedores FROM      proveedores";
+        const datos = await getProvidersQuery(query);
+        if (datos) {
+
+          setProvidersAmount(datos[0].cantidad_proveedores);
+        };
+      } catch (error) {
+        console.error('Error al obtener datos:', error);
+      }
+    };
+    
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const query: string = "SELECT      count (*) as cantidad_productos FROM      productos";
+        const datos = await getProvidersQuery(query);
+        if (datos) {
+
+          setProductsAmount(datos[0].cantidad_productos);
+        };
+      } catch (error) {
+        console.error('Error al obtener datos:', error);
+      }
+    };
+    
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const query: string = "SELECT      count (*) as cantidad_facturas FROM      facturas";
+        const datos = await getProvidersQuery(query);
+        if (datos) {
+
+          setFacturesAmount(datos[0].cantidad_facturas);
+        };
+      } catch (error) {
+        console.error('Error al obtener datos:', error);
+      }
+    };
+    
+    fetchData()
   }, [])
   
   useEffect(() => {
@@ -175,10 +329,10 @@ const Home = () => {
           <StatisticsCard salesData={salesData}/>
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
-          <LowStocks stockData={stockData} />
+          <LowStocks stockData={lowStock} />
         </Grid>
         <Grid item xs={12} md={12} lg={8}>
-          <DepositWithdraw ProvidersData={providersData} ProductsData={productsData} />
+          <DepositWithdraw ProvidersData={bestProviders} ProductsData={bestProducts} />
         </Grid>
       </Grid>
       

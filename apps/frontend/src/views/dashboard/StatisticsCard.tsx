@@ -32,6 +32,14 @@ interface StatisticsCardProps {
   salesData: DataType[];
 }
 
+const customFormatter = (value: number): string => {
+  return value > 999999
+    ? `${(value / 1000000).toFixed(3)}M`
+    : value > 999
+    ? `${(value / 1000).toFixed(0)}K`
+    : `${value}`;
+};
+
 const StatisticsCard: React.FC<StatisticsCardProps> = ({ salesData }) => {
   return (
     // Contenido de StatisticsCard utilizando salesData
@@ -72,7 +80,7 @@ const StatisticsCard: React.FC<StatisticsCardProps> = ({ salesData }) => {
                 </Avatar>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                   <Typography variant='caption'>{item.title}</Typography>
-                  <Typography variant='h6'>{item.stats}</Typography>
+                  <Typography variant='h6'>{customFormatter(item.stats)}</Typography>
                 </Box>
               </Box>
             </Grid>
