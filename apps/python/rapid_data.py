@@ -40,11 +40,13 @@ create_sql = """
         cantidad INTEGER
     );
 
-    CREATE TABLE IF NOT EXISTS rapid_boleta_productos (
+    CREATE TABLE IF NOT EXISTS rapid_fact_ventas (
         id serial PRIMARY KEY,
-        id_boleta TEXT REFERENCES rapid_boletas (id),
+        id_boleta TEXT REFERENCES boletas (id),
         id_producto TEXT REFERENCES productos (identificador),
-        precio_producto FLOAT
+        cantidad INTEGER,
+        precio_unitario FLOAT,
+        precio_total FLOAT
     );
 """
 
@@ -60,29 +62,28 @@ cursor = conexion.cursor()
 cursor.execute(create_sql)
 conexion.commit()
 
-consulta_sql = """
-    select id_tiempo, id_proveedor, id_producto, cantidad, precio_unitario, precio_total from facturas WHERE id_tiempo > 6205
-"""
-sql_query = 'INSERT INTO rapid_facturas (id_tiempo, id_proveedor, id_producto, cantidad, precio_unitario, precio_total) VALUES %s'
-rapid_insert(consulta_sql, sql_query, cursor, conexion)
+# consulta_sql = """
+#     select id_tiempo, id_proveedor, id_producto, cantidad, precio_unitario, precio_total from facturas WHERE id_tiempo > 6205
+# """
+# sql_query = 'INSERT INTO rapid_facturas (id_tiempo, id_proveedor, id_producto, cantidad, precio_unitario, precio_total) VALUES %s'
+# rapid_insert(consulta_sql, sql_query, cursor, conexion)
+
+# consulta_sql = """
+#     select id, id_tiempo from boletas WHERE id_tiempo > 6205
+# """
+# sql_query = 'INSERT INTO rapid_boletas (id, id_tiempo) VALUES %s'
+# rapid_insert(consulta_sql, sql_query, cursor, conexion)
+
+# consulta_sql = """
+#     select id_producto, id_tiempo, cantidad from stock WHERE id_tiempo > 6205
+# """
+# sql_query = 'INSERT INTO rapid_stock (id_producto, id_tiempo, cantidad) VALUES %s'
+# rapid_insert(consulta_sql, sql_query, cursor, conexion)
 
 consulta_sql = """
-    select id, id_tiempo from boletas WHERE id_tiempo > 6205
+    select id_boleta, id_producto, cantidad, precio_unitario, precio_total from fact_ventas WHERE id_boleta in (select id from boletas WHERE id_tiempo > 6205)
 """
-sql_query = 'INSERT INTO rapid_boletas (id, id_tiempo) VALUES %s'
-rapid_insert(consulta_sql, sql_query, cursor, conexion)
-
-consulta_sql = """
-    select id_producto, id_tiempo, cantidad from stock WHERE id_tiempo > 6205
-"""
-sql_query = 'INSERT INTO rapid_stock (id_producto, id_tiempo, cantidad) VALUES %s'
-rapid_insert(consulta_sql, sql_query, cursor, conexion)
-
-
-consulta_sql = """
-    select id_boleta, id_producto, precio_producto from boleta_producto WHERE id_boleta in (select id from boletas WHERE id_tiempo > 6205)
-"""
-sql_query = 'INSERT INTO rapid_boleta_productos (id_boleta, id_producto, precio_producto) VALUES %s'
+sql_query = 'INSERT INTO rapid_fact_ventas (id_boleta, id_producto, cantidad, precio_unitario, precio_total) VALUES %s'
 rapid_insert(consulta_sql, sql_query, cursor, conexion)
 
 # Cerrar la conexión y el cursor
