@@ -17,7 +17,12 @@ import { ApexOptions } from 'apexcharts'
 // ** Custom Components Imports
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 
-const SalesByCountries = () => {
+interface LineChartProps {
+  seriesData: number[];
+  categoriesData: string[];
+}
+
+const LineChart = ({ seriesData, categoriesData }: LineChartProps) => {
   // ** Hook
   const theme = useTheme()
 
@@ -25,7 +30,6 @@ const SalesByCountries = () => {
     chart: {
       parentHeightOffset: 0,
       toolbar: { show: false },
-      type: 'line' // Especifica el tipo de gráfico aquí
     },
     stroke: {
       width: 2,
@@ -52,7 +56,7 @@ const SalesByCountries = () => {
       }
     },
     xaxis: {
-      categories: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+      categories: categoriesData,
       tickPlacement: 'on',
       labels: { show: true },
       axisTicks: { show: false },
@@ -71,7 +75,7 @@ const SalesByCountries = () => {
   return (
     <Card>
       <CardHeader
-        title='SalesByCountries'
+        title='LineChart'
         titleTypographyProps={{
           sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
         }}
@@ -82,10 +86,10 @@ const SalesByCountries = () => {
         }
       />
       <CardContent sx={{ '& .apexcharts-xcrosshairs.apexcharts-active': { opacity: 0 } }}>
-        <ReactApexcharts type='line' height={500} options={options} series={[{ data: [37, 57, 45, 75, 57, 40, 65] }]} />
+        <ReactApexcharts type='line' height={500} options={options} series={[{ data: seriesData }]} />
       </CardContent>
     </Card>
   )
 }
 
-export default SalesByCountries
+export default LineChart

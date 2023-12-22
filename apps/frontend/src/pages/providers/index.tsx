@@ -18,9 +18,9 @@ import Table from 'src/views/dashboard/Table'
 import Trophy from 'src/views/dashboard/Trophy'
 import TotalEarning from 'src/views/dashboard/TotalEarning'
 import StatisticsCard from 'src/views/dashboard/StatisticsCard'
-import WeeklyOverview from 'src/views/dashboard/WeeklyOverview'
+import BarChart from 'src/views/dashboard/BarChart'
 import DepositWithdraw from 'src/views/dashboard/DepositWithdraw'
-import SalesByCountries from 'src/views/dashboard/SalesByCountries'
+import LineChart from 'src/views/dashboard/LineChart'
 import { useEffect, useState } from 'react'
 
 interface Reponse {
@@ -31,17 +31,23 @@ interface Reponse {
 const ProvidersPage = () => {
   const [data1, setData1] = useState<Response>();
 
+  // series de ejemplo
+  const seriesData = [37, 57, 45, 75, 57, 40, 100];
+  const categoriesData = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  // cargar data aqui
   useEffect(() => {
     //setData(response.json)
-  },[])
+  }, [])
+  
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} md={6} lg={16}>
-          <WeeklyOverview /> {/* ACA */}
+          <BarChart seriesData={seriesData} categoriesData={categoriesData} /> {/* ACA */}
         </Grid>
         <Grid item xs={12} md={6} lg={16}>
-          <SalesByCountries />
+          <LineChart seriesData={seriesData} categoriesData={categoriesData} />
         </Grid>
         <Grid item xs={12} md={6} lg={8}>
           <DepositWithdraw />

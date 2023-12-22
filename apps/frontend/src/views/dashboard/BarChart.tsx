@@ -17,7 +17,12 @@ import { ApexOptions } from 'apexcharts'
 // ** Custom Components Imports
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 
-const WeeklyOverview = () => {
+interface BarChartProps {
+  seriesData: number[];
+  categoriesData: string[];
+}
+
+const BarChart = ({ seriesData, categoriesData }: BarChartProps) => {
   // ** Hook
   const theme = useTheme()
 
@@ -65,7 +70,7 @@ const WeeklyOverview = () => {
       }
     },
     xaxis: {
-      categories: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+      categories: categoriesData,
       tickPlacement: 'on',
       labels: { show: true },
       axisTicks: { show: false },
@@ -95,10 +100,10 @@ const WeeklyOverview = () => {
         }
       />
       <CardContent sx={{ '& .apexcharts-xcrosshairs.apexcharts-active': { opacity: 0 } }}>
-        <ReactApexcharts type='bar' height={500} options={options} series={[{ data: [37, 57, 45, 75, 57, 40, 65] }]} />
+        <ReactApexcharts type='bar' height={500} options={options} series={[{ data: seriesData }]} />
       </CardContent>
     </Card>
   )
 }
 
-export default WeeklyOverview
+export default BarChart
