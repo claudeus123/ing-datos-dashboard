@@ -30,16 +30,14 @@ const WeeklyOverview = () => {
       bar: {
         borderRadius: 9,
         distributed: true,
-        columnWidth: '40%',
-        endingShape: 'rounded',
-        startingShape: 'rounded'
+        columnWidth: '30%',
       }
     },
     stroke: {
       width: 2,
       colors: [theme.palette.background.paper]
     },
-    legend: { show: false },
+    legend: { show: true },
     grid: {
       strokeDashArray: 7,
       padding: {
@@ -51,12 +49,12 @@ const WeeklyOverview = () => {
     },
     dataLabels: { enabled: false },
     colors: [
-      theme.palette.background.default,
-      theme.palette.background.default,
-      theme.palette.background.default,
       theme.palette.primary.main,
-      theme.palette.background.default,
-      theme.palette.background.default
+      theme.palette.primary.main,
+      theme.palette.primary.main,
+      theme.palette.primary.main,
+      theme.palette.primary.main,
+      theme.palette.primary.main //theme.palette.background.default
     ],
     states: {
       hover: {
@@ -69,7 +67,7 @@ const WeeklyOverview = () => {
     xaxis: {
       categories: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
       tickPlacement: 'on',
-      labels: { show: false },
+      labels: { show: true },
       axisTicks: { show: false },
       axisBorder: { show: false }
     },
@@ -97,16 +95,7 @@ const WeeklyOverview = () => {
         }
       />
       <CardContent sx={{ '& .apexcharts-xcrosshairs.apexcharts-active': { opacity: 0 } }}>
-        <ReactApexcharts type='bar' height={205} options={options} series={[{ data: [37, 57, 45, 75, 57, 40, 65] }]} />
-        <Box sx={{ mb: 7, display: 'flex', alignItems: 'center' }}>
-          <Typography variant='h5' sx={{ mr: 4 }}>
-            45%
-          </Typography>
-          <Typography variant='body2'>Your sales performance is 45% 😎 better compared to last month</Typography>
-        </Box>
-        <Button fullWidth variant='contained'>
-          Details
-        </Button>
+        <ReactApexcharts type='bar' height={500} options={options} series={[{ data: [37, 57, 45, 75, 57, 40, 65] }]} />
       </CardContent>
     </Card>
   )
