@@ -18,11 +18,12 @@ import { ApexOptions } from 'apexcharts'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 
 interface BarChartProps {
+  title: string;
   seriesData: number[];
   categoriesData: string[];
 }
 
-const BarChart = ({ seriesData, categoriesData }: BarChartProps) => {
+const BarChart = ({ title, seriesData, categoriesData }: BarChartProps) => {
   // ** Hook
   const theme = useTheme()
 
@@ -89,7 +90,7 @@ const BarChart = ({ seriesData, categoriesData }: BarChartProps) => {
   return (
     <Card>
       <CardHeader
-        title='Weekly Overview'
+        title={title}
         titleTypographyProps={{
           sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
         }}

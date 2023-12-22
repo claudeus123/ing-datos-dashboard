@@ -30,7 +30,10 @@ interface Reponse {
 }
 
 const ProvidersPage = () => {
-  const [data1, setData1] = useState<Response>();
+  const [lista, setLista] = useState<Reponse>({labels:[],amount:[]});
+
+
+  
 
   // series de ejemplo
   const seriesData = [37, 57, 45, 75, 57, 40, 100];
@@ -38,16 +41,29 @@ const ProvidersPage = () => {
 
   // cargar data aqui
   useEffect(() => {
+    console.log("alooo")
     const fetchData = async () => {
       try {
-        const datos = await obtenerProveedoresMasCaros("WITH ranked_categories AS (SELECT p.id_proveedor AS proveedor_id, p.proveedor AS nombre_proveedor, pr.categoria, SUM(f.cantidad) AS cantidad_total_facturada, ROW_NUMBER() OVER (PARTITION BY p.id_proveedor, pr.categoria ORDER BY SUM(f.cantidad) ASC) AS ranking FROM proveedores p JOIN facturas f ON p.id_proveedor = f.id_proveedor JOIN productos pr ON f.id_producto = pr.identificador JOIN tiempo t ON f.id_tiempo = t.id WHERE t.año = 2022 GROUP BY p.id_proveedor, p.proveedor, pr.categoria) SELECT nombre_proveedor, cantidad_total_facturada FROM ranked_categories WHERE ranking BETWEEN 1 AND 10 ORDER BY proveedor_id, categoria, cantidad_total_facturada ASC;");
-        const dato1 = datos[0];
-        console.log(datos)
-        console.log(dato1)
-        console.log(dato1.cantidad_total_facturada);
-        console.log(dato1.cantidad_total_facturada);
+        const datos = await obtenerProveedoresMasCaros("SELECT proveedores.proveedor, SUM(facturas.precio_total) AS total_facturado FROM facturas JOIN tiempo ON facturas.id_tiempo = tiempo.id JOIN proveedores ON facturas.id_proveedor = proveedores.id_proveedor WHERE tiempo.año = 2022 GROUP BY proveedores.proveedor ORDER BY total_facturado DESC LIMIT 10;");
+        
+        if (datos){
+          console.log("Aqui deberia haber datos: ", datos)
+          let lista_nombres = [];
+          let lista_cantidad = [];
+          
+          for (const object of datos) {
+            lista_nombres.push(object.proveedor);
+            lista_cantidad.push(object.total_facturado);
+          }
+  
+          
+          const lista: Reponse = {labels: lista_nombres, amount: lista_cantidad}
+          setLista(lista);
 
+        };
 
+        
+        
         // Aquí puedes hacer algo con los datos, como establecerlos en un estado con setData
       } catch (error) {
         console.error('Error al obtener datos:', error);
@@ -61,10 +77,10 @@ const ProvidersPage = () => {
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} md={6} lg={16}>
-          <BarChart seriesData={seriesData} categoriesData={categoriesData} /> {/* ACA */}
+          <BarChart title="Top 10 proveedores con mas facturas en el 2022" seriesData={lista!.amount} categoriesData={lista!.labels} /> {/* ACA */}
         </Grid>
         <Grid item xs={12} md={6} lg={16}>
-          <LineChart seriesData={seriesData} categoriesData={categoriesData} />
+          <LineChart seriesData={lista!.amount} categoriesData={lista!.labels} />
         </Grid>
         <Grid item xs={12} md={6} lg={8}>
           <DepositWithdraw />
