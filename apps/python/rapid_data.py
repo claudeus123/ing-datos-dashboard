@@ -39,6 +39,13 @@ create_sql = """
         id_tiempo INTEGER REFERENCES tiempo (id),
         cantidad INTEGER
     );
+
+    CREATE TABLE IF NOT EXISTS rapid_boleta_productos (
+        id serial PRIMARY KEY,
+        id_boleta TEXT REFERENCES rapid_boletas (id),
+        id_producto TEXT REFERENCES productos (identificador),
+        precio_producto FLOAT
+    );
 """
 
 conexion = psycopg2.connect(
@@ -69,6 +76,13 @@ consulta_sql = """
     select id_producto, id_tiempo, cantidad from stock WHERE id_tiempo > 6205
 """
 sql_query = 'INSERT INTO rapid_stock (id_producto, id_tiempo, cantidad) VALUES %s'
+rapid_insert(consulta_sql, sql_query, cursor, conexion)
+
+
+consulta_sql = """
+    select id_boleta, id_producto, precio_producto from boleta_producto WHERE id_boleta in (select id from boletas WHERE id_tiempo > 6205)
+"""
+sql_query = 'INSERT INTO rapid_boleta_productos (id_boleta, id_producto, precio_producto) VALUES %s'
 rapid_insert(consulta_sql, sql_query, cursor, conexion)
 
 # Cerrar la conexión y el cursor
